@@ -8,6 +8,7 @@ spring_io_dependency_management = "1.1.0"
 spring_mockk = "4.0.2"
 
 redisson = "3.25.2"
+springdoc_openapi = "2.3.0"
 # test
 junit = "5.9.3"
 assertj = "3.24.2"
@@ -37,14 +38,18 @@ spring_boot_starter_test = { module = "org.springframework.boot:spring-boot-star
 spring_boot_testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 test_containers_junit_jupiter = { module = "org.testcontainers:junit-jupiter" }
 test_containers_mysql = { module = "org.testcontainers:mysql" }
+test_containers_postgresql = { module = "org.testcontainers:postgresql" }
 
 fixture_monkey_starter_kotlin = { module = "com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin", version.ref = "fixture_monkey" }
 
 mysql_connector = { module = "com.mysql:mysql-connector-j" }
+postgresql = { module = "org.postgresql:postgresql" }
 
 h2 = { module = "com.h2database:h2" }
 
 jackson_kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
+
+springdoc_openapi_starter = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc_openapi" }
 
 micrometer_tracing_bridge_brave = { module = "io.micrometer:micrometer-tracing-bridge-brave" }
 micrometer_registry_prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
@@ -53,3 +58,4 @@ assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 spring_mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring_mockk" }
 [bundles]
 testcontainers_mysql = ["test_containers_mysql", "spring_boot_testcontainers", "test_containers_junit_jupiter","spring_boot_starter_test"]
+testcontainers_postgresql = ["test_containers_postgresql", "spring_boot_testcontainers", "test_containers_junit_jupiter","spring_boot_starter_test"]

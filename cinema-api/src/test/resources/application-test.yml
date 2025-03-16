@@ -1,13 +1,11 @@
 spring:
-  application.name: cinema
+  application.name: cinema-test
   datasource:
-    url: jdbc:postgresql://localhost:5432/cinema
-    username: postgres
-    password: postgres
+    # TestContainers will provide these values dynamically
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -24,4 +22,9 @@ springdoc:
     path: /api-docs
   show-actuator: true
   default-consumes-media-type: application/json
-  default-produces-media-type: application/json 
+  default-produces-media-type: application/json
+
+logging:
+  level:
+    org.testcontainers: INFO
+    org.hibernate.SQL: DEBUG 

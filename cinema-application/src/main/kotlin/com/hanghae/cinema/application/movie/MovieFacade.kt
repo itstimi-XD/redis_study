@@ -14,25 +14,29 @@ class MovieFacade(
     
     fun getNowPlayingMovies(): List<MovieResponseDto> {
         val nowPlayingMovies = movieService.findNowPlayingMovies()
-        return nowPlayingMovies.map { movie ->
-            val schedules = scheduleService.findByMovie(movie.id!!)
-            MovieResponseDto(
-                id = movie.id,
-                title = movie.title,
-                rating = movie.rating,
-                releaseDate = movie.releaseDate,
-                thumbnailUrl = movie.thumbnailUrl,
-                runningTime = movie.runningTime,
-                genre = movie.genre.name,
-                schedules = schedules.map { schedule ->
-                    ScheduleResponseDto(
-                        id = schedule.id!!,
-                        theaterName = schedule.theater.name,
-                        startTime = schedule.startTime,
-                        endTime = schedule.endTime
-                    )
-                }.sortedBy { it.startTime }
-            )
+        return nowPlayingMovies.mapNotNull { movie ->
+            movie.id?.let { movieId ->
+                val schedules = scheduleService.findByMovie(movieId)
+                MovieResponseDto(
+                    id = movieId,
+                    title = movie.title,
+                    rating = movie.rating,
+                    releaseDate = movie.releaseDate,
+                    thumbnailUrl = movie.thumbnailUrl,
+                    runningTime = movie.runningTime,
+                    genre = movie.genre.name,
+                    schedules = schedules.mapNotNull { schedule ->
+                        schedule.id?.let { scheduleId ->
+                            ScheduleResponseDto(
+                                id = scheduleId,
+                                theaterName = schedule.theater.name,
+                                startTime = schedule.startTime,
+                                endTime = schedule.endTime
+                            )
+                        }
+                    }.sortedBy { it.startTime }
+                )
+            }
         }.sortedByDescending { it.releaseDate }
     }
 } 

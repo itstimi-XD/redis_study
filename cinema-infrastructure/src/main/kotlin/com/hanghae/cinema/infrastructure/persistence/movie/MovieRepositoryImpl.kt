@@ -11,4 +11,8 @@ class MovieRepositoryImpl(private val movieJpaRepository: MovieJpaRepository) : 
     override fun findByReleaseDateLessThanEqualOrderByReleaseDateDesc(date: LocalDate): List<Movie> {
         return movieJpaRepository.findByReleaseDateLessThanEqualOrderByReleaseDateDesc(date)
     }
+    
+    override fun saveAll(movies: List<Movie>): List<Movie> {
+        return movieJpaRepository.saveAll(movies)
+    }
 } 

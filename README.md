@@ -191,23 +191,38 @@ GET /api/movies/now-playing
 
 ## 프로젝트 실행 방법
 
-1. Docker Compose를 사용하여 MySQL 데이터베이스 실행:
+1. 애플리케이션 실행:
 ```bash
-docker-compose up -d
+./gradlew :cinema-api:bootRun --args='--spring.profiles.active=test'
 ```
 
-2. 애플리케이션 실행:
-```bash
-./gradlew :cinema-api:bootRun
-```
-
-3. API 테스트:
-   - IntelliJ HTTP Client를 사용하여 `cinema-api/src/test/http/movie.http` 파일의 요청 실행
-   - 또는 브라우저에서 `http://localhost:8080/api/movies/now-playing` 접속
+2. API 테스트:
+   - Swagger UI를 사용하여 API 테스트: `http://localhost:8080/swagger-ui.html`
+   - 또는 브라우저에서 `http://localhost:8080/api/movies` 접속
 
 ## 기술 스택
 - Kotlin
 - Spring Boot 3.x
 - Spring Data JPA
-- MySQL
-- Docker Compose
+- PostgreSQL (with TestContainers)
+- Docker
+- Swagger/OpenAPI
+
+## 데이터베이스 설정
+
+이 프로젝트는 TestContainers를 사용하여 PostgreSQL 데이터베이스를 자동으로 실행합니다. 
+별도의 데이터베이스 설치나 Docker Compose 설정이 필요하지 않습니다.
+
+테스트 프로필(`test`)로 애플리케이션을 실행하면 다음과 같은 작업이 자동으로 수행됩니다:
+1. TestContainers가 PostgreSQL Docker 컨테이너를 시작
+2. 스키마가 자동으로 생성됨 (JPA의 `hibernate.ddl-auto=create-drop` 설정 사용)
+3. `DataInitializer` 클래스에 의해 초기 데이터가 자동으로 삽입됨
+
+## 초기 데이터
+
+애플리케이션 시작 시 다음과 같은 초기 데이터가 자동으로 생성됩니다:
+- 장르: 액션, 코미디, 드라마, SF
+- 영화: 어벤져스: 엔드게임, 기생충, 인터스텔라
+- 상영관: 1관, 2관, 3관
+
+이 데이터는 `DataInitializer` 클래스에서 관리되며, 필요에 따라 수정할 수 있습니다.

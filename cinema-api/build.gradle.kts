@@ -8,8 +8,19 @@ dependencies {
     implementation(project(":cinema-application"))
     
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.postgresql)
+    
+    // Swagger/OpenAPI
+    implementation(libs.springdoc.openapi.starter)
+    
+    // TestContainers for both main and test
+    implementation("org.testcontainers:postgresql:${libs.versions.test.containers.get()}")
+    implementation("org.testcontainers:testcontainers:${libs.versions.test.containers.get()}")
+    implementation("org.springframework.boot:spring-boot-testcontainers")
     
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.bundles.testcontainers.postgresql)
 }
 
 tasks.getByName("bootJar") {
@@ -18,4 +29,10 @@ tasks.getByName("bootJar") {
 
 tasks.getByName("jar") {
     enabled = false
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 } 

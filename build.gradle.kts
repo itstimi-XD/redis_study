@@ -12,6 +12,12 @@ plugins {
 allprojects {
     group = "com.hanghae"
     version = "0.0.1-SNAPSHOT"
+    
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
 }
 
 subprojects {
@@ -21,6 +27,11 @@ subprojects {
         plugin("jacoco")
     }
 
+    tasks.withType<JavaCompile> {
+        sourceCompatibility = JavaVersion.VERSION_17.toString()
+        targetCompatibility = JavaVersion.VERSION_17.toString()
+    }
+
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -28,9 +39,11 @@ subprojects {
         }
     }
 
-    tasks.test {
-        ignoreFailures = true
-        useJUnitPlatform()
+    afterEvaluate {
+        tasks.withType<Test> {
+            useJUnitPlatform()
+            ignoreFailures = true
+        }
     }
 }
 
