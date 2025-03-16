@@ -1,0 +1,3 @@
+### 상영 중인 영화 조회
+GET http://localhost:8080/api/movies/now-playing
+Accept: application/json 
