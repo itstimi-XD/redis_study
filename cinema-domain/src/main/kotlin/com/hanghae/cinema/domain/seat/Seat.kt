@@ -16,7 +16,10 @@ class Seat(
     val theater: Theater,
     
     val seatNumber: String,
-    val row: Char,
+    
+    @Column(name = "seat_row")
+    val seatRow: Char,
+    
     @Column(name = "column_num")
     val column: Int,
     

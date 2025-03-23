@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
 import javax.sql.DataSource
 
@@ -15,10 +15,10 @@ import javax.sql.DataSource
 class DatabaseConfig {
 
     companion object {
-        private val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:15-alpine"))
+        private val mysqlContainer: MySQLContainer<*> = MySQLContainer(DockerImageName.parse("mysql:8.0"))
             .withDatabaseName("cinema")
-            .withUsername("postgres")
-            .withPassword("postgres")
+            .withUsername("cinema")
+            .withPassword("cinema")
             .apply { start() }
     }
 
@@ -26,10 +26,10 @@ class DatabaseConfig {
     @Primary
     fun dataSource(): DataSource {
         return DataSourceBuilder.create()
-            .url(postgresContainer.jdbcUrl)
-            .username(postgresContainer.username)
-            .password(postgresContainer.password)
-            .driverClassName("org.postgresql.Driver")
+            .url(mysqlContainer.jdbcUrl)
+            .username(mysqlContainer.username)
+            .password(mysqlContainer.password)
+            .driverClassName("com.mysql.cj.jdbc.Driver")
             .build()
     }
 } 

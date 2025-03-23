@@ -28,9 +28,10 @@ dependencies {
     implementation("org.springframework:spring-context")
     
     // Database
-    implementation(libs.postgresql)
+    implementation("com.mysql:mysql-connector-j")
     
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.bundles.testcontainers.postgresql)
+    testImplementation("org.testcontainers:mysql:${libs.versions.test.containers.get()}")
+    testImplementation("org.testcontainers:junit-jupiter:${libs.versions.test.containers.get()}")
 } 

@@ -9,13 +9,15 @@ dependencies {
     
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation(libs.postgresql)
+    
+    // MySQL
+    implementation("com.mysql:mysql-connector-j")
     
     // Swagger/OpenAPI
     implementation(libs.springdoc.openapi.starter)
     
     // TestContainers for both main and test
-    implementation("org.testcontainers:postgresql:${libs.versions.test.containers.get()}")
+    implementation("org.testcontainers:mysql:${libs.versions.test.containers.get()}")
     implementation("org.testcontainers:testcontainers:${libs.versions.test.containers.get()}")
     implementation("org.springframework.boot:spring-boot-testcontainers")
 
@@ -28,7 +30,8 @@ dependencies {
     implementation("org.redisson:redisson:${libs.versions.redisson.get()}")
     
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.bundles.testcontainers.postgresql)
+    testImplementation("org.testcontainers:mysql:${libs.versions.test.containers.get()}")
+    testImplementation("org.testcontainers:junit-jupiter:${libs.versions.test.containers.get()}")
 }
 
 tasks.getByName("bootJar") {

@@ -2,6 +2,15 @@
 
 이 문서는 항해 시네마 프로젝트 2주차 성능 최적화 요구사항 구현 방법에 대해 설명합니다. 검색 기능, 인덱싱, 캐싱(로컬 및 분산)을 통한 성능 개선 방법과 성능 테스트 실행 방법을 다룹니다.
 
+## 데이터베이스 환경
+
+이 프로젝트는 MySQL 데이터베이스를 사용합니다. Docker Compose를 통해 MySQL과 Redis 서비스를 실행할 수 있습니다.
+
+```bash
+# MySQL + Redis 실행
+docker-compose up -d
+```
+
 ## 목차
 
 - [요구사항 개요](#요구사항-개요)
@@ -37,7 +46,7 @@ class MovieController(private val movieFacade: MovieFacade) {
         @RequestParam(required = false) title: String?,
         @RequestParam(required = false) genre: String?
     ): ResponseEntity<List<MovieResponseDto>> {
-        // 요청 파라미터 검증
+        // 요청 파라미터 검증 -> 추후에 다른 계층으로 이동시켜보려 합니다
         validateSearchParams(title, genre)
         return ResponseEntity.ok(movieFacade.getNowPlayingMovies(title, genre))
     }
@@ -135,13 +144,7 @@ CREATE INDEX idx_movie_release_date ON movie (release_date);
 
 ### 2. 인덱스 적용 방법
 
-Flyway를 사용하여 마이그레이션 실행:
-
-```bash
-./gradlew flywayMigrate
-```
-
-또는 데이터베이스 콘솔에서 직접 실행:
+데이터베이스 콘솔에서 직접 실행:
 
 ```bash
 mysql -u cinema -p cinema < cinema-infrastructure/src/main/resources/db/migration/V2__add_indexes.sql
@@ -171,7 +174,6 @@ ORDER BY m.release_date DESC;
 
 ## 로컬 캐시(Caffeine) 적용
 
-단일 인스턴스 환경에서의 캐싱을 위해 Caffeine 캐시를 적용했습니다.
 
 ### 1. 의존성 추가
 

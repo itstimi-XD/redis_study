@@ -1,10 +1,10 @@
 spring:
-  application.name: cinema
+  application.name: cinema-dev
   datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3307/cinema?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: cinema
     password: cinema
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,4 +24,8 @@ springdoc:
     path: /api-docs
   show-actuator: true
   default-consumes-media-type: application/json
-  default-produces-media-type: application/json 
+  default-produces-media-type: application/json
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG 
