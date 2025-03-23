@@ -18,6 +18,14 @@ dependencies {
     implementation("org.testcontainers:postgresql:${libs.versions.test.containers.get()}")
     implementation("org.testcontainers:testcontainers:${libs.versions.test.containers.get()}")
     implementation("org.springframework.boot:spring-boot-testcontainers")
+
+    // Caffeine Cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.redisson:redisson:${libs.versions.redisson.get()}")
     
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.bundles.testcontainers.postgresql)

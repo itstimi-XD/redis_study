@@ -20,12 +20,20 @@ allprojects {
     }
 }
 
-subprojects {
-    apply {
-        plugin("org.jetbrains.kotlin.jvm")
-        plugin("org.jetbrains.kotlin.plugin.spring")
-        plugin("jacoco")
+buildscript {
+    repositories {
+        mavenCentral()
     }
+    dependencies {
+        classpath("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    }
+}
+
+subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+    apply(plugin = "org.jetbrains.kotlin.kapt")
+    apply(plugin = "jacoco")
 
     tasks.withType<JavaCompile> {
         sourceCompatibility = JavaVersion.VERSION_17.toString()
