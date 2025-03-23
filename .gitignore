@@ -9,6 +9,7 @@ build/
 *.iml
 *.ipr
 out/
+.vscode/
 
 # Compiled class file
 *.class
