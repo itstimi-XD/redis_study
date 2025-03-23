@@ -12,8 +12,8 @@ class MovieFacade(
     private val scheduleService: ScheduleService
 ) {
     
-    fun getNowPlayingMovies(): List<MovieResponseDto> {
-        val nowPlayingMovies = movieService.findNowPlayingMovies()
+    fun getNowPlayingMovies(title: String? = null, genre: String? = null): List<MovieResponseDto> {
+        val nowPlayingMovies = movieService.findNowPlayingMovies(title, genre)
         return nowPlayingMovies.mapNotNull { movie ->
             movie.id?.let { movieId ->
                 val schedules = scheduleService.findByMovie(movieId)
