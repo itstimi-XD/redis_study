@@ -159,8 +159,7 @@ ORDER BY m.release_date DESC;
 ```
 
 ### 부하 테스트 결과
-
-![인덱스 적용 후 부하 테스트 결과](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/5dd18c3c-42c0-4461-99e0-0b90751ba95b/Screenshot_2024-12-09_at_15.20.09.png)
+![인덱스 적용 후 부하 테스트 결과](https://github.com/user-attachments/assets/ecb848fc-ab6a-4421-95ce-84224a1c832c)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 11.86s
