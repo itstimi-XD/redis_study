@@ -32,7 +32,7 @@
 1주차에서 구현한 검색 기능이 없는 기본 API에 대한 성능 테스트입니다. 이 테스트는 해당하는 커밋에 체크아웃하여 수행되었습니다.
 
 ### 부하 테스트 결과
-![1주차 API 테스트 결과](# 여기에 1주차 API 테스트 결과 스크린샷 경로를 넣으세요)
+![1주차 부하테스트 결과](https://github.com/user-attachments/assets/10912775-3aa6-457e-8477-b8d33d8815f3)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 17.18ms
@@ -86,7 +86,7 @@ mysql> EXPLAIN SELECT m.* FROM movies m
 ```
 
 ### 부하 테스트 결과
-![인덱스 적용 전 부하 테스트 결과](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/5dd18c3c-42c0-4461-99e0-0b90751ba95b/Screenshot_2024-12-09_at_15.20.09.png)
+![인덱스 적용 전 부하 테스트 결과](https://github.com/user-attachments/assets/8768a5ed-120a-4ce1-aff1-25f51b0aced5)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 9.42초
@@ -203,7 +203,7 @@ mysql> EXPLAIN
 
 ### 부하 테스트 결과
 
-![인덱스 적용 후 부하 테스트 결과](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/5dd18c3c-42c0-4461-99e0-0b90751ba95b/Screenshot_2024-12-09_at_15.20.09.png)
+![인덱스 적용 후 부하 테스트 결과](https://github.com/user-attachments/assets/6f23e355-f471-4ef1-93af-21fe3e3bf9bf)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 9.59초
@@ -306,7 +306,7 @@ class MovieService(
 
 ### 부하 테스트 결과
 
-![로컬 캐시 적용 후 부하 테스트 결과](https://example.com/local-cache-test-results.png)
+![로컬 캐시 적용 후 부하 테스트 결과](https://github.com/user-attachments/assets/d7aa6460-5d92-4328-b48d-00e42f902ec5)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 4.38ms
@@ -372,7 +372,7 @@ class RedisConfig {
 
 ### 부하 테스트 결과
 
-![Redis 캐시 적용 후 부하 테스트 결과](https://example.com/redis-cache-test-results.png)
+![Redis 캐시 적용 후 부하 테스트 결과](https://github.com/user-attachments/assets/c3f09d48-2888-402d-a108-0ad9d9505cf8)
 
 **주요 지표**:
 - **http_req_duration (평균)**: 10.08초
