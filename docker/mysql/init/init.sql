@@ -74,6 +74,10 @@ CREATE INDEX idx_movie_title ON movies (title);
 CREATE INDEX idx_movie_genre_id ON movies (genre_id);
 CREATE INDEX idx_movie_release_date ON movies (release_date);
 
+-- -- 기존 인덱스 명시적 삭제
+-- DROP INDEX IF EXISTS idx_movie_title ON movies;
+-- DROP INDEX IF EXISTS idx_movie_genre_id ON movies;
+-- DROP INDEX IF EXISTS idx_movie_release_date ON movies;
 -- 장르 데이터 추가
 INSERT INTO genres (name, created_at, created_by, updated_at, updated_by) VALUES
 ('액션', NOW(), 'system', NOW(), 'system'),

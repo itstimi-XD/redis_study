@@ -4,6 +4,7 @@
 
 ## 목차
 - [사전 준비](#사전-준비)
+- [0. 1주차 API 테스트](#0-1주차-api-테스트)
 - [1. 인덱스 적용 전 테스트](#1-인덱스-적용-전-테스트)
 - [2. 인덱스 적용 후 테스트](#2-인덱스-적용-후-테스트)
 - [3. 로컬 캐시 적용 후 테스트](#3-로컬-캐시-적용-후-테스트)
@@ -33,6 +34,38 @@ docker-compose up -d mysql
 mysql -u cinema -p cinema
 > SELECT COUNT(*) FROM movies;  # 500개 이상 있어야 함
 > SELECT COUNT(*) FROM schedules;  # 충분한 수의 스케줄 확인
+```
+
+## 0. 1주차 API 테스트
+
+### 0-1. 1주차 코드 체크아웃
+```bash
+# 1주차 브랜치로 체크아웃 혹은 해당하는 커밋으로 체크아웃
+git checkout week1
+```
+
+### 0-2. 애플리케이션 실행 (dev 프로필)
+```bash
+./gradlew cinema-api:bootRun --args='--spring.profiles.active=dev'
+```
+
+### 0-3. K6 부하 테스트 실행
+```bash
+# 새 터미널에서 K6 테스트 실행
+k6 run k6-scripts/movie-api-test.js
+```
+
+### 0-4. 테스트 결과 수집
+K6 테스트 결과에서 다음 정보를 복사하여 보고서에 붙여넣습니다:
+- http_req_duration (평균)
+- http_req_duration (p95)
+- 처리량(RPS)
+- 실패율
+
+### 0-5. 2주차 코드로 돌아오기
+```bash
+# 2주차 브랜치로 체크아웃 혹은 해당하는 커밋으로 체크아웃
+git checkout week2
 ```
 
 ## 1. 인덱스 적용 전 테스트
@@ -118,6 +151,16 @@ ORDER BY m.release_date DESC;
 ```bash
 k6 run k6-scripts/movie-api-test.js
 ```
+### 2-6. 테스트 결과 수집
+K6 테스트 결과에서 다음 정보를 복사하여 보고서에 붙여넣습니다:
+- http_req_duration (평균)
+- http_req_duration (p95)
+- 처리량(RPS)
+- 실패율
+
+스크린샷도 함께 저장합니다:
+- Mac: `Cmd + Shift + 4`
+- Windows: `Win + Shift + S`
 
 ## 3. 로컬 캐시 적용 후 테스트
 
@@ -130,6 +173,17 @@ k6 run k6-scripts/movie-api-test.js
 ```bash
 k6 run k6-scripts/movie-api-test.js
 ```
+
+### 3-3. 테스트 결과 수집
+K6 테스트 결과에서 다음 정보를 복사하여 보고서에 붙여넣습니다:
+- http_req_duration (평균)
+- http_req_duration (p95)
+- 처리량(RPS)
+- 실패율
+
+스크린샷도 함께 저장합니다:
+- Mac: `Cmd + Shift + 4`
+- Windows: `Win + Shift + S`
 
 ## 4. 분산 캐시 적용 후 테스트
 
@@ -153,6 +207,16 @@ PONG이 반환되면 Redis가 정상적으로 실행 중입니다.
 ```bash
 k6 run k6-scripts/movie-api-test.js
 ```
+### 4-5. 테스트 결과 수집
+K6 테스트 결과에서 다음 정보를 복사하여 보고서에 붙여넣습니다:
+- http_req_duration (평균)
+- http_req_duration (p95)
+- 처리량(RPS)
+- 실패율
+
+스크린샷도 함께 저장합니다:
+- Mac: `Cmd + Shift + 4`
+- Windows: `Win + Shift + S`
 
 ## 문제 해결
 
