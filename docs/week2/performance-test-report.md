@@ -435,4 +435,161 @@ Redis 캐시 적용 결과:
    - 데이터 증가에 대비한 인덱스 전략 수립 필요
 
 
+## 6. Redis Failover 전략
+
+### 문제 상황
+- Redis 연결 실패 시 전체 시스템 장애로 이어지는 문제 발생
+- 캐시 계층이 단일 장애 지점(Single Point of Failure)이 되는 위험
+
+### 개선 전략
+
+#### 1. Circuit Breaker 패턴 적용
+```kotlin
+@Cacheable(
+    value = ["nowPlayingMovies"], 
+    key = "#title?.toString() ?: 'all' + '_' + #genre?.toString() ?: 'all'",
+    unless = "#result == null"
+)
+@CircuitBreaker(name = "movieCache", fallbackMethod = "getNowPlayingMoviesFallback")
+fun getNowPlayingMovies(title: String? = null, genre: String? = null): List<MovieResponseDto>
+```
+
+#### 2. Fallback 메커니즘
+- Redis 접근 실패 시 즉시 데이터베이스 조회로 전환
+- 로깅을 통한 장애 상황 모니터링
+- 점진적인 복구를 위한 Circuit Breaker 설정
+
+#### 3. Circuit Breaker 설정
+```yaml
+resilience4j:
+  circuitbreaker:
+    instances:
+      movieCache:
+        slidingWindowSize: 10        # 상태 결정을 위한 호출 수
+        minimumNumberOfCalls: 5      # 최소 호출 횟수
+        failureRateThreshold: 50     # 실패율 임계값
+        waitDurationInOpenState: 10s # Circuit Open 상태 유지 시간
+        permittedNumberOfCallsInHalfOpenState: 3  # Half-Open 상태에서 허용할 호출 수
+```
+
+### 기대 효과
+1. **안정성 향상**
+   - Redis 장애 시에도 서비스 가용성 유지
+   - 점진적인 복구를 통한 시스템 안정성 확보
+
+2. **모니터링 강화**
+   - 장애 상황에 대한 로깅 및 추적
+   - 캐시 계층의 건강도 모니터링
+
+3. **성능 영향 최소화**
+   - 장애 상황에서도 acceptable한 응답 시간 유지
+   - 부분적 성능 저하는 있으나 전체 시스템 장애 방지
+
+### 추가 고려사항
+1. **캐시 복구 전략**
+   - Circuit Breaker가 Half-Open 상태로 전환 시 점진적인 트래픽 처리
+   - Redis 복구 후 캐시 워밍업 전략 수립 필요
+
+2. **모니터링 및 알림**
+   - Circuit Breaker 상태 변화 모니터링
+   - 임계값 초과 시 운영팀 알림
+
+3. **캐시 키 전략 개선**
+   - 캐시 히트율을 높이기 위한 키 설계 재검토
+   - 장르 기반 캐싱 우선 적용 검토
+
+
+## 7. 개선사항 및 향후 과제
+
+### 1. 테스트 데이터 개선
+- **현재 한계점**
+  - 테스트용 영화 데이터 500개로 제한적
+  - 검색 테스트에 사용된 제목이 4개로 너무 적음
+  - 캐시 히트율이 비정상적으로 높아질 가능성
+
+- **개선 방안**
+  - 실제 서비스 규모를 고려한 데이터셋 확장 (최소 10,000개 이상)
+  - 다양한 검색 패턴을 반영한 테스트 시나리오 추가
+  - 실제 사용자 패턴을 반영한 데이터 분포 (인기 영화, 장르별 분포 등)
+
+### 2. 캐시 전략 개선
+- **TTL 설정 기준 명확화**
+  - 현재: 임의로 설정된 10분
+  - 개선: 데이터 변경 주기 분석에 기반한 TTL 설정
+    - 영화 정보 업데이트 주기: 일 1회
+    - 상영 스케줄 변경 주기: 시간당
+    - 장르별 차등 적용 검토
+
+- **캐시 키 전략 최적화**
+  - 현재: title + genre 조합으로 인한 낮은 히트율
+  - 개선: 장르 기반 우선 캐싱 + 인기 검색어 기반 캐싱
+
+### 3. 실패율 개선 전략
+#### 현재 문제점
+- Redis 연결 실패 시 100% 실패율
+- 일반 요청에서도 10% 수준의 높은 실패율
+
+#### 단계별 개선 방안
+1. **즉시 적용 가능한 개선**
+   - Circuit Breaker 패턴 적용으로 Redis 장애 대응
+   - 로깅 강화로 실패 원인 추적
+   - 타임아웃 설정 최적화
+
+2. **성능 최적화**
+   - 인덱스 재설계 (복합 인덱스 검토)
+   - 캐시 워밍업 전략 도입
+   - 쿼리 최적화 (Projection 활용)
+
+3. **인프라 레벨 개선**
+   - Redis Cluster 구성 검토
+   - 부하 분산 전략 수립
+   - 모니터링 체계 구축
+
+### 4. Redis 연결 문제 해결
+#### 현재 설정 문제점
+- 기본 타임아웃 설정 부재
+- 커넥션 풀 설정 미흡
+- 장애 복구 전략 부재
+
+#### 개선된 설정
+```yaml
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3000
+      connect-timeout: 3000
+      client-type: lettuce
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: 1000
+        shutdown-timeout: 100ms
+```
+
+#### 모니터링 강화
+- Redis 연결 상태 모니터링
+- 커넥션 풀 사용량 추적
+- 응답 시간 및 타임아웃 발생 빈도 측정
+
+### 5. 대규모 데이터셋 테스트 계획
+1. **데이터 준비**
+   - 실제 서비스 규모의 테스트 데이터 생성
+   - 다양한 검색 패턴 시나리오 구성
+   - 실제 사용자 패턴 분석 및 반영
+
+2. **테스트 단계**
+   - 인덱스 적용 전 기준 측정
+   - 인덱스 적용 후 실행 계획 분석
+   - 성능 지표 측정 (TPS, 응답시간, CPU/메모리 사용량)
+
+3. **결과 분석**
+   - 인덱스 효과 정량적 평가
+   - 병목 구간 식별
+   - 추가 최적화 포인트 도출
+
+
 
