@@ -1,5 +1,6 @@
 -- 데이터 초기화
 SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS reservations;
 DROP TABLE IF EXISTS schedules;
 DROP TABLE IF EXISTS seats;
 DROP TABLE IF EXISTS theaters;
@@ -69,10 +70,29 @@ CREATE TABLE seats (
     FOREIGN KEY (theater_id) REFERENCES theaters(id)
 );
 
+CREATE TABLE reservations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    schedule_id BIGINT NOT NULL,
+    seat_id BIGINT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    version BIGINT DEFAULT 0,
+    reserved_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    created_by VARCHAR(50) NOT NULL,
+    updated_at DATETIME NOT NULL,
+    updated_by VARCHAR(50) NOT NULL,
+    FOREIGN KEY (schedule_id) REFERENCES schedules(id),
+    FOREIGN KEY (seat_id) REFERENCES seats(id)
+);
+
 -- 영화 테이블에 인덱스 추가
 CREATE INDEX idx_movie_title ON movies (title);
 CREATE INDEX idx_movie_genre_id ON movies (genre_id);
 CREATE INDEX idx_movie_release_date ON movies (release_date);
+
+-- 인덱스 추가
+CREATE INDEX idx_reservation_schedule_seat ON reservations (schedule_id, seat_id);
+CREATE INDEX idx_reservation_user ON reservations (user_id);
 
 -- -- 기존 인덱스 명시적 삭제
 -- DROP INDEX IF EXISTS idx_movie_title ON movies;
