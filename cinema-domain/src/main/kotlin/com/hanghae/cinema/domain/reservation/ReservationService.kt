@@ -5,15 +5,17 @@ import com.hanghae.cinema.domain.seat.Seat
 import com.hanghae.cinema.domain.seat.SeatRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.annotation.Isolation
 import java.time.LocalDateTime
 
 @Service
 class ReservationService(
     private val reservationRepository: ReservationRepository,
+    private val pessimisticLockableReservationRepository: PessimisticLockableReservationRepository,
     private val scheduleRepository: ScheduleRepository,
     private val seatRepository: SeatRepository
 ) {
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     fun reserve(scheduleId: Long, seatIds: List<Long>, userId: String): List<Reservation> {
         // 1. 좌석 개수 검증
         require(seatIds.size <= 5) { "한 번에 최대 5개의 좌석만 예약할 수 있습니다." }
@@ -27,8 +29,9 @@ class ReservationService(
         require(seats.size == seatIds.size) { "존재하지 않는 좌석이 포함되어 있습니다." }
         validateSeatsAreConsecutive(seats)
 
-        // 4. 이미 예약된 좌석인지 확인
-        val existingReservations = reservationRepository.findAllByScheduleIdAndSeatIdIn(scheduleId, seatIds)
+        // 4. 이미 예약된 좌석인지 확인 (비관적 락 사용)
+        val existingReservations = pessimisticLockableReservationRepository
+            .findAllByScheduleIdAndSeatIdInWithPessimisticLock(scheduleId, seatIds)
         require(existingReservations.isEmpty()) { "이미 예약된 좌석이 포함되어 있습니다." }
 
         // 5. 사용자의 기존 예약 수 확인

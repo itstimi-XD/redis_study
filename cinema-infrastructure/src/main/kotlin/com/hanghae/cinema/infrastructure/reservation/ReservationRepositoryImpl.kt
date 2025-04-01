@@ -2,12 +2,13 @@ package com.hanghae.cinema.infrastructure.reservation
 
 import com.hanghae.cinema.domain.reservation.Reservation
 import com.hanghae.cinema.domain.reservation.ReservationRepository
+import com.hanghae.cinema.domain.reservation.PessimisticLockableReservationRepository
 import org.springframework.stereotype.Repository
 
 @Repository
 class ReservationRepositoryImpl(
     private val reservationJpaRepository: ReservationJpaRepository
-) : ReservationRepository {
+) : ReservationRepository, PessimisticLockableReservationRepository {
     override fun save(reservation: Reservation): Reservation {
         return reservationJpaRepository.save(reservation)
     }
@@ -28,7 +29,7 @@ class ReservationRepositoryImpl(
         return reservationJpaRepository.findAllByScheduleIdAndSeatIdIn(scheduleId, seatIds)
     }
 
-    fun findAllByScheduleIdAndSeatIdInWithPessimisticLock(scheduleId: Long, seatIds: List<Long>): List<Reservation> {
+    override fun findAllByScheduleIdAndSeatIdInWithPessimisticLock(scheduleId: Long, seatIds: List<Long>): List<Reservation> {
         return reservationJpaRepository.findAllByScheduleIdAndSeatIdInWithPessimisticLock(scheduleId, seatIds)
     }
 } 
