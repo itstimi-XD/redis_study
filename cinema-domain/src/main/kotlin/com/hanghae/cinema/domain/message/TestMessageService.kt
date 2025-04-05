@@ -1,17 +1,16 @@
-package com.hanghae.cinema.infrastructure.message
+package com.hanghae.cinema.domain.message
 
-import com.hanghae.cinema.domain.message.MessageService
 import com.hanghae.cinema.domain.reservation.Reservation
-import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 
 @Service
-class DefaultMessageService : MessageService {
-    private val logger = LoggerFactory.getLogger(javaClass)
+@Primary
+class TestMessageService : MessageService {
+    private val sentMessages = mutableMapOf<String, String>()
 
     override fun send(userId: String, message: String) {
-        logger.info("Sending message to user $userId: $message")
-        Thread.sleep(500) // Simulating external service call
+        sentMessages[userId] = message
     }
 
     override fun sendReservationComplete(reservations: List<Reservation>, userId: String) {
@@ -22,4 +21,10 @@ class DefaultMessageService : MessageService {
                 "${reservations.size}개의 좌석이 예약되었습니다."
         send(userId, message)
     }
-} 
+
+    fun getLastMessageFor(userId: String): String? = sentMessages[userId]
+
+    fun clearMessages() {
+        sentMessages.clear()
+    }
+}

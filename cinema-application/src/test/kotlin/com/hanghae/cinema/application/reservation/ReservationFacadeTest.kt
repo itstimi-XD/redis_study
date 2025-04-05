@@ -1,47 +1,46 @@
 package com.hanghae.cinema.application.reservation
 
+import com.hanghae.cinema.application.config.ApplicationConfig
 import com.hanghae.cinema.application.config.TestConfig
-import com.hanghae.cinema.application.message.TestMessageService
+import com.hanghae.cinema.domain.message.TestMessageService
 import com.hanghae.cinema.application.reservation.dto.ReservationRequest
-import com.hanghae.cinema.domain.movie.Movie
 import com.hanghae.cinema.domain.reservation.ReservationRepository
-import com.hanghae.cinema.domain.reservation.ReservationService
 import com.hanghae.cinema.domain.schedule.Schedule
 import com.hanghae.cinema.domain.schedule.ScheduleRepository
 import com.hanghae.cinema.domain.seat.Seat
 import com.hanghae.cinema.domain.seat.SeatRepository
-import com.hanghae.cinema.domain.theater.Theater
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.dao.PessimisticLockingFailureException
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import java.time.LocalDateTime
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import org.junit.jupiter.api.Assertions.*
-import org.springframework.dao.PessimisticLockingFailureException
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
 import java.util.concurrent.atomic.AtomicInteger
-import com.hanghae.cinema.application.config.ApplicationConfig
 
 @SpringBootTest(
-    classes = [ApplicationConfig::class, TestConfig::class]
+    classes = [
+        ApplicationConfig::class,
+        TestConfig::class,
+        ReservationFacade::class
+    ]
 )
 @Testcontainers
 @ActiveProfiles("test")
 class ReservationFacadeTest @Autowired constructor(
     private val reservationFacade: ReservationFacade,
-    private val reservationService: ReservationService,
-    private val messageService: TestMessageService,
     private val scheduleRepository: ScheduleRepository,
     private val seatRepository: SeatRepository,
-    private val reservationRepository: ReservationRepository
+    private val reservationRepository: ReservationRepository,
+    private val messageService: TestMessageService
 ) {
     companion object {
         @Container
@@ -49,22 +48,18 @@ class ReservationFacadeTest @Autowired constructor(
             withDatabaseName("testdb")
             withUsername("test")
             withPassword("test")
-            withInitScript("schema.sql")
+            withInitScript("init.sql")
+            withUrlParam("useSSL", "false")
+            withUrlParam("allowPublicKeyRetrieval", "true")
         }
 
         @JvmStatic
         @DynamicPropertySource
         fun properties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url") { mysqlContainer.jdbcUrl }
+            registry.add("spring.datasource.url") { "jdbc:tc:mysql:8.0.32:///${mysqlContainer.databaseName}" }
+            registry.add("spring.datasource.driver-class-name") { "org.testcontainers.jdbc.ContainerDatabaseDriver" }
             registry.add("spring.datasource.username") { mysqlContainer.username }
             registry.add("spring.datasource.password") { mysqlContainer.password }
-            registry.add("spring.jpa.hibernate.ddl-auto") { "validate" }
-            registry.add("spring.jpa.database-platform") { "org.hibernate.dialect.MySQLDialect" }
-            registry.add("spring.jpa.show-sql") { "true" }
-            registry.add("spring.jpa.properties.hibernate.format_sql") { "true" }
-            registry.add("spring.sql.init.mode") { "always" }
-            registry.add("spring.sql.init.schema-locations") { "classpath:schema.sql" }
-            registry.add("spring.jpa.defer-datasource-initialization") { "true" }
         }
     }
 

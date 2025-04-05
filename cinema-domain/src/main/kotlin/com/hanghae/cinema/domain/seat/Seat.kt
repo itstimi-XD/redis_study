@@ -15,6 +15,7 @@ class Seat(
     @JoinColumn(name = "theater_id")
     val theater: Theater,
     
+    @Column(name = "seat_number")
     val seatNumber: String,
     
     @Column(name = "seat_row")
@@ -23,8 +24,15 @@ class Seat(
     @Column(name = "column_num")
     val column: Int,
     
+    @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(name = "created_by")
     val createdBy: String = "system",
+
+    @Column(name = "updated_at")
     var updatedAt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(name = "updated_by")
     var updatedBy: String = "system"
 ) 
