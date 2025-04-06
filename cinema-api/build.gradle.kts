@@ -10,6 +10,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     
+    // Google Guava
+    implementation("com.google.guava:guava:32.1.3-jre")
+    
     // MySQL
     implementation("com.mysql:mysql-connector-j")
     
