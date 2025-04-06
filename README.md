@@ -3,6 +3,28 @@
 ## 프로젝트 소개
 '항해 시네마'는 '모형물 배 = 항해호'에 탑승하여, 최신 및 재개봉 영화를 관람할 수 있는 서비스입니다.
 
+## 주차별 구현 내용
+
+1. [1주차: 프로젝트 설정 및 기본 API 구현](docs/week1/README.md)
+   - 프로젝트 초기 설정
+   - 모듈 구조 설계
+   - 영화 조회 API 구현
+
+2. [2주차: 영화 예매 기능 구현](docs/week2/README.md)
+   - 영화 예매 기능 구현
+   - 성능 최적화 및 테스트
+   - 검색 기능 추가
+
+3. [3주차: 캐시 적용 및 성능 최적화](docs/week3/README.md)
+   - Caffeine 로컬 캐시 적용
+   - Redis 분산 캐시 적용
+   - 성능 테스트 및 모니터링
+
+4. [4주차: Rate Limit 구현](docs/week4/README.md)
+   - 단일 서버 환경: Google Guava RateLimiter
+   - 분산 환경: Redis + Redisson
+   - 프로필 기반 구현체 선택
+
 ## 모듈 구성 및 책임
 이 프로젝트는 Clean + Layered Architecture를 기반으로 설계되었으며, 다음과 같은 모듈 구조를 가집니다:
 
