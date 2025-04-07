@@ -35,6 +35,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:mysql:${libs.versions.test.containers.get()}")
     testImplementation("org.testcontainers:junit-jupiter:${libs.versions.test.containers.get()}")
+    
+    // Mockito Kotlin
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 }
 
 tasks.getByName("bootJar") {
